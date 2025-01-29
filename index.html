@@ -3,108 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sigmas Hideout - Rate the Website</title>
+    <title>Sigmas Hideout - YouTube Embed</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #ff6f61;
+        }
+        .video-link {
+            margin: 20px 0;
+        }
+        .video-link input {
+            padding: 10px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            margin-right: 10px;
+            font-size: 1rem;
+            background: #333;
+            color: #fff;
+        }
+        .video-link button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background: #ff6f61;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .video-link button:hover {
+            background: #ff8a73;
+        }
+        .video-container {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+            border-radius: 8px;
+        }
+        .suggested-videos {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .video-suggestions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .suggested-video {
+            cursor: pointer;
+            width: 160px;
+            text-align: center;
+        }
+        .suggested-video img {
+            width: 100%;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .suggested-video img:hover {
+            transform: scale(1.05);
+        }
+        .suggested-video p {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #ff6f61;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Sigmas Hideout - Rate the Website</h1>
+    <h1>Sigmas Hideout</h1>
     
-    <!-- Rating Section -->
-    <div class="rating-container">
-        <div class="rating-buttons">
-            <button id="thumbsUp" onclick="rateWebsite('up')">👍 Thumbs Up</button>
-            <button id="thumbsDown" onclick="rateWebsite('down')">👎 Thumbs Down</button>
-        </div>
-        <div class="message" id="message"></div>
-    </div>
-
+    <!-- Video Link Input -->
     <div class="video-link">
         <input type="text" id="videoUrl" placeholder="Enter YouTube Video Link (e.g. https://youtu.be/sF5LYGgKbUA)">
         <button onclick="embedVideo()">Embed Video</button>
     </div>
     
+    <!-- Video Container -->
     <div class="video-container" id="videoContainer" style="display: none;">
-        <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe id="videoIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 
-    <!-- Suggested Videos Section -->
+    <!-- Suggested Videos -->
     <div id="suggestedVideos" class="suggested-videos" style="display: none;">
-        <h2>Suggested Videos:</h2>
+        <h2>Suggested Videos</h2>
         <div class="video-suggestions">
-            <!-- These will be dynamically populated with video thumbnails -->
+            <!-- Populated dynamically -->
         </div>
     </div>
 
     <script>
-        // Check if the user has already voted
-        if (localStorage.getItem('hasVoted')) {
-            disableButtons();
-            showMessage('Thanks for your feedback!');
-        }
-
-        // Handle rating submission
-        function rateWebsite(vote) {
-            // Save the user's vote in localStorage
-            localStorage.setItem('hasVoted', 'true');
-            localStorage.setItem('vote', vote);
-            
-            // Disable the buttons to prevent further voting
-            disableButtons();
-            
-            // Show a confirmation message
-            showMessage('Thanks for your feedback!');
-        }
-
-        // Disable the thumbs up and thumbs down buttons
-        function disableButtons() {
-            document.getElementById('thumbsUp').disabled = true;
-            document.getElementById('thumbsDown').disabled = true;
-        }
-
-        // Show the message after voting
-        function showMessage(message) {
-            document.getElementById('message').textContent = message;
-        }
-
-        // Embed YouTube video from link
+        // Embed YouTube video from the link
         function embedVideo() {
-            var videoUrl = document.getElementById('videoUrl').value;
-            var videoId = videoUrl.split('youtu.be/')[1] || videoUrl.split('youtube.com/watch?v=')[1]?.split('&')[0];
+            const videoUrl = document.getElementById('videoUrl').value;
+            const videoId = extractVideoId(videoUrl);
 
             if (videoId) {
-                var iframeSrc = "https://www.youtube.com/embed/" + videoId;
+                const iframeSrc = `https://www.youtube.com/embed/${videoId}`;
                 document.getElementById('videoIframe').src = iframeSrc;
                 document.getElementById('videoContainer').style.display = 'block';
-
-                // Display suggested videos
+                
                 loadSuggestedVideos(videoId);
             } else {
                 alert('Please enter a valid YouTube link!');
             }
         }
 
-        // Load suggested videos based on the current video ID
-        function loadSuggestedVideos(videoId) {
-            var suggestionsContainer = document.querySelector('.video-suggestions');
-            suggestionsContainer.innerHTML = ""; // Clear any previous suggestions
+        // Extract video ID from a YouTube link
+        function extractVideoId(url) {
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]+)/);
+            return match ? match[1] : null;
+        }
 
-            // Example: These would be dynamically fetched in a real-world app
-            var suggestedVideoIds = [
+        // Load suggested videos
+        function loadSuggestedVideos(videoId) {
+            const suggestionsContainer = document.querySelector('.video-suggestions');
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+            // Example static video IDs for suggestions
+            const suggestedVideoIds = [
                 "sF5LYGgKbUA", "xA4q9xN1NMI", "ZMzE0ga1WaY", "8n6qkaZp9NA"
             ];
 
-            suggestedVideoIds.forEach(function(id) {
-                var videoElement = document.createElement('div');
-                videoElement.classList.add('suggested-video');
-                videoElement.innerHTML = `
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Video Thumbnail">
-                    <p>Suggested Video</p>
-                `;
-                videoElement.onclick = function() {
-                    embedSuggestedVideo(id);
-                };
-                suggestionsContainer.appendChild(videoElement);
+            suggestedVideoIds.forEach((id) => {
+                if (id !== videoId) {
+                    const videoElement = document.createElement('div');
+                    videoElement.classList.add('suggested-video');
+                    videoElement.innerHTML = `
+                        <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Video Thumbnail">
+                        <p>Video Title</p>
+                    `;
+                    videoElement.onclick = () => embedSuggestedVideo(id);
+                    suggestionsContainer.appendChild(videoElement);
+                }
             });
 
             // Show the suggestions
@@ -113,11 +163,8 @@
 
         // Embed the clicked suggested video
         function embedSuggestedVideo(videoId) {
-            var iframeSrc = "https://www.youtube.com/embed/" + videoId;
+            const iframeSrc = `https://www.youtube.com/embed/${videoId}`;
             document.getElementById('videoIframe').src = iframeSrc;
-
-            // Hide suggested videos once a new video is embedded
-            document.getElementById('suggestedVideos').style.display = 'none';
         }
     </script>
 
