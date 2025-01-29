@@ -1,48 +1,51 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #222;
-  color: #fff;
-  margin: 0;
-  padding: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sigmas Hideout</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sigmas Hideout</h1>
+    <div id="video-section">
+      <iframe id="youtubeEmbed" width="560" height="315" 
+        src="https://www.youtube.com/embed/sF5LYGgKbUA" 
+        title="YouTube video player" frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+    </div>
+    <div class="suggestions">
+      <h2>Suggested Videos</h2>
+      <ul id="suggestedList"></ul>
+    </div>
+  </div>
 
-.container {
-  text-align: center;
-  padding: 20px;
-}
+  <script>
+    // Video suggestions array
+    const suggestions = [
+      { title: "Cool Sigma Moves", link: "https://www.youtube.com/embed/3JZ_D3ELwOQ" },
+      { title: "Epic Tutorial", link: "https://www.youtube.com/embed/2Vv-BfVoq4g" },
+      { title: "Learn Fast", link: "https://www.youtube.com/embed/NgDq1Jw4Hyo" },
+      { title: "Motivational Speech", link: "https://www.youtube.com/embed/L8lt6SgBsyg" },
+    ];
 
-h1 {
-  color: #ff6f61;
-}
+    // Display suggestions
+    const suggestedList = document.getElementById("suggestedList");
+    suggestions.forEach(video => {
+      const li = document.createElement("li");
+      li.textContent = video.title;
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => loadVideo(video.link));
+      suggestedList.appendChild(li);
+    });
 
-#video-section {
-  margin: 20px auto;
-}
-
-.suggestions {
-  margin-top: 20px;
-  text-align: left;
-  padding: 20px;
-}
-
-.suggestions h2 {
-  color: #ff6f61;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  background-color: #444;
-  color: #fff;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-li:hover {
-  background-color: #ff6f61;
-}
+    // Load video on click
+    function loadVideo(videoLink) {
+      const embed = document.getElementById("youtubeEmbed");
+      embed.src = videoLink;
+    }
+  </script>
+</body>
+</html>
