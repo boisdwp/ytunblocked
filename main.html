@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigmas Hideout - Rate the Website</title>
+    <link rel="stylesheet" href="style.css"> <!-- External CSS link -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #222;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 800px;
+            height: 450px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .video-link {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        input {
+            padding: 15px;
+            font-size: 1rem;
+            width: 60%;
+            border: 2px solid #ff6f61;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            outline: none;
+        }
+        input:focus {
+            border-color: #ff4e42;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            background-color: #ff6f61;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ff4e42;
+        }
+        .rating-container {
+            margin-top: 30px;
+        }
+        .rating-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .rating-buttons button {
+            background-color: #444;
+            border: 1px solid #ff6f61;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .rating-buttons button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        .rating-buttons button:hover:not(:disabled) {
+            background-color: #ff6f61;
+        }
+        .message {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        .counts {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            color: #ff6f61;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sigmas Hideout - Rate the Website</h1>
+
+    <!-- Video Embed Section -->
+    <div class="video-container" id="videoContainer">
+        <!-- Video will be dynamically embedded here -->
+    </div>
+
+    <!-- Link Input for Video -->
+    <div class="video-link">
+        <input type="text" id="videoLink" placeholder="Enter YouTube video URL" />
+        <button onclick="embedVideo()">Embed Video</button>
+    </div>
+
+    <!-- Rating Section -->
+    <div class="rating-container">
+        <div class="rating-buttons">
+            <button id="thumbsUp" onclick="rateWebsite('up')">👍 Thumbs Up</button>
+            <button id="thumbsDown" onclick="rateWebsite('down')">👎 Thumbs Down</button>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <!-- Display Like and Dislike Counts -->
+    <div class="counts" id="counts">
+        <p>👍 Likes: <span id="likeCount">0</span></p>
+        <p>👎 Dislikes: <span id="dislikeCount">0</span></p>
+    </div>
+
+    <script>
+        // Get existing vote counts or initialize to 0
+        let likeCount = parseInt(localStorage.getItem('likeCount')) || 0;
+        let dislikeCount = parseInt(localStorage.getItem('dislikeCount')) || 0;
+
+        // Display initial vote counts
+        document.getElementById('likeCount').textContent = likeCount;
+        document.getElementById('dislikeCount').textContent = dislikeCount;
+
+        // Check if the user has already voted
+        if (localStorage.getItem('hasVoted')) {
+            disableButtons();
+            showMessage('Thanks for your feedback!');
+        }
+
+        // Handle rating submission
+        function rateWebsite(vote) {
+            // Update counts based on vote
+            if (vote === 'up') {
+                likeCount++;
+                localStorage.setItem('likeCount', likeCount);
+            } else if (vote === 'down') {
+                dislikeCount++;
+                localStorage.setItem('dislikeCount', dislikeCount);
+            }
+
+            // Save the user's vote in localStorage
+            localStorage.setItem('hasVoted', 'true');
+
+            // Disable the buttons to prevent further voting
+            disableButtons();
+            
+            // Update the displayed counts
+            document.getElementById('likeCount').textContent = likeCount;
+            document.getElementById('dislikeCount').textContent = dislikeCount;
+            
+            // Show a confirmation message
+            showMessage('Thanks for your feedback!');
+        }
+
+        // Disable the thumbs up and thumbs down buttons
+        function disableButtons() {
+            document.getElementById('thumbsUp').disabled = true;
+            document.getElementById('thumbsDown').disabled = true;
+        }
+
+        // Show the message after voting
+        function showMessage(message) {
+            document.getElementById('message').textContent = message;
+        }
+
+        // Embed YouTube video based on the link entered
+        function embedVideo() {
+            const videoUrl = document.getElementById('videoLink').value;
+            const videoId = extractVideoId(videoUrl);
+
+            if (videoId) {
+                const iframe = `<iframe src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0" frameborder="0" allowfullscreen></iframe>`;
+                document.getElementById('videoContainer').innerHTML = iframe;
+            } else {
+                alert('Please enter a valid YouTube video URL.');
+            }
+        }
+
+        // Extract video ID from YouTube URL
+        function extractVideoId(url) {
+            const regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+|(?:v|e(?:mbed)?)\/([^"&?\/\s]*)))/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+    </script>
+
+</body>
+</html>
