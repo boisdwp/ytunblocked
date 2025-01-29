@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sigmas Hideout - Rate the Website</title>
-    <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,6 +26,14 @@
     
     <div class="video-container" id="videoContainer" style="display: none;">
         <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <!-- Suggested Videos Section -->
+    <div id="suggestedVideos" class="suggested-videos" style="display: none;">
+        <h2>Suggested Videos:</h2>
+        <div class="video-suggestions">
+            <!-- These will be dynamically populated with video thumbnails -->
+        </div>
     </div>
 
     <script>
@@ -69,9 +76,48 @@
                 var iframeSrc = "https://www.youtube.com/embed/" + videoId;
                 document.getElementById('videoIframe').src = iframeSrc;
                 document.getElementById('videoContainer').style.display = 'block';
+
+                // Display suggested videos
+                loadSuggestedVideos(videoId);
             } else {
                 alert('Please enter a valid YouTube link!');
             }
+        }
+
+        // Load suggested videos based on the current video ID
+        function loadSuggestedVideos(videoId) {
+            var suggestionsContainer = document.querySelector('.video-suggestions');
+            suggestionsContainer.innerHTML = ""; // Clear any previous suggestions
+
+            // Example: These would be dynamically fetched in a real-world app
+            var suggestedVideoIds = [
+                "sF5LYGgKbUA", "xA4q9xN1NMI", "ZMzE0ga1WaY", "8n6qkaZp9NA"
+            ];
+
+            suggestedVideoIds.forEach(function(id) {
+                var videoElement = document.createElement('div');
+                videoElement.classList.add('suggested-video');
+                videoElement.innerHTML = `
+                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Video Thumbnail">
+                    <p>Suggested Video</p>
+                `;
+                videoElement.onclick = function() {
+                    embedSuggestedVideo(id);
+                };
+                suggestionsContainer.appendChild(videoElement);
+            });
+
+            // Show the suggestions
+            document.getElementById('suggestedVideos').style.display = 'block';
+        }
+
+        // Embed the clicked suggested video
+        function embedSuggestedVideo(videoId) {
+            var iframeSrc = "https://www.youtube.com/embed/" + videoId;
+            document.getElementById('videoIframe').src = iframeSrc;
+
+            // Hide suggested videos once a new video is embedded
+            document.getElementById('suggestedVideos').style.display = 'none';
         }
     </script>
 
