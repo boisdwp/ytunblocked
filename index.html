@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sigmas Hideout - Rate the Website</title>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Sigmas Hideout - Rate the Website</h1>
+    
+    <!-- Rating Section -->
+    <div class="rating-container">
+        <div class="rating-buttons">
+            <button id="thumbsUp" onclick="rateWebsite('up')">👍 Thumbs Up</button>
+            <button id="thumbsDown" onclick="rateWebsite('down')">👎 Thumbs Down</button>
+        </div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="video-link">
+        <input type="text" id="videoUrl" placeholder="Enter YouTube Video Link (e.g. https://youtu.be/sF5LYGgKbUA)">
+        <button onclick="embedVideo()">Embed Video</button>
+    </div>
+    
+    <div class="video-container" id="videoContainer" style="display: none;">
+        <iframe id="videoIframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        // Check if the user has already voted
+        if (localStorage.getItem('hasVoted')) {
+            disableButtons();
+            showMessage('Thanks for your feedback!');
+        }
+
+        // Handle rating submission
+        function rateWebsite(vote) {
+            // Save the user's vote in localStorage
+            localStorage.setItem('hasVoted', 'true');
+            localStorage.setItem('vote', vote);
+            
+            // Disable the buttons to prevent further voting
+            disableButtons();
+            
+            // Show a confirmation message
+            showMessage('Thanks for your feedback!');
+        }
+
+        // Disable the thumbs up and thumbs down buttons
+        function disableButtons() {
+            document.getElementById('thumbsUp').disabled = true;
+            document.getElementById('thumbsDown').disabled = true;
+        }
+
+        // Show the message after voting
+        function showMessage(message) {
+            document.getElementById('message').textContent = message;
+        }
+
+        // Embed YouTube video from link
+        function embedVideo() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            var videoId = videoUrl.split('youtu.be/')[1] || videoUrl.split('youtube.com/watch?v=')[1]?.split('&')[0];
+
+            if (videoId) {
+                var iframeSrc = "https://www.youtube.com/embed/" + videoId;
+                document.getElementById('videoIframe').src = iframeSrc;
+                document.getElementById('videoContainer').style.display = 'block';
+            } else {
+                alert('Please enter a valid YouTube link!');
+            }
+        }
+    </script>
+
+</body>
+</html>
